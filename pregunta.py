@@ -25,14 +25,16 @@ def procesar_datos():
         .astype(float)
     )
 
-    # Convertir columna fecha_de_beneficio a formato de fecha
+    # Convertir columna fecha_de_beneficio a formato de fecha (dos intentos de formato)
     datos["fecha_de_beneficio"] = pd.to_datetime(
         datos["fecha_de_beneficio"], format="%d/%m/%Y", errors="coerce"
-    ).fillna(
-        pd.to_datetime(datos["fecha_de_beneficio"], format="%Y/%m/%d", errors="coerce")
+    )
+    datos["fecha_de_beneficio"].fillna(
+        pd.to_datetime(datos["fecha_de_beneficio"], format="%Y/%m/%d", errors="coerce"), inplace=True
     )
 
-    # Convertir comuna_ciudadano a enteros
+    # Convertir comuna_ciudadano a enteros, pero verificando que sean válidos
+    datos = datos[datos["comuna_ciudadano"].notna()]  # Eliminar nulos antes de convertir
     datos["comuna_ciudadano"] = datos["comuna_ciudadano"].astype(int)
 
     # Eliminar duplicados y registros con valores nulos
